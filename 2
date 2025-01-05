@@ -1,8 +1,8 @@
- from tensorflow.keras.datasets import fashion_mnist
+from tensorflow.keras.datasets import fashion_mnist
  
- (X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
+(X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
  
- X_train, X_test = X_train / 255.0, X_test / 255.0
+X_train, X_test = X_train / 255.0, X_test / 255.0
 !pip install tensorflow
 
 import tensorflow as tf
@@ -23,11 +23,11 @@ lr_schedule = tf.keras.callbacks.LearningRateScheduler(lambda epoch: 1e-3
 history = model.fit(X_train, y_train, epochs=10, validation_data=(X_test, 
 y_test), callbacks=[lr_schedule])
 
- import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
  # Plot accuracy
- plt.plot(history.history['accuracy'], label='Training Accuracy')
- plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
- plt.xlabel('Epochs')
- plt.ylabel('Accuracy')
- plt.legend()
- plt.show()
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
