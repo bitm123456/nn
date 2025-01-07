@@ -1,0 +1,77 @@
+import tensorflow as tf
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+(x_train,y_train),(x_test,y_test)=imdb.load_data(num_words=10000)
+x_train=pad_sequences(x_train,maxlen=200)
+x_test=pad_sequences(x_test,maxlen=200)
+
+model=tf.keras.Sequential([
+    tf.keras.layers.Embedding(input_dim=10000,output_dim=128,input_length=200),
+    tf.keras.layers.LSTM(128,return_sequences=False),
+    tf.keras.layers.Dense(1,activation='sigmoid')
+])
+model.compile(optimizer='adam',loss='binary_crossentropy',metrics=['accuracy'])
+
+history=model.fit(x_train,y_train,epochs=10,batch_size=64,validation_data=(x_test,y_test))
+
+import matplotlib.pyplot as plt
+plt.plot(history.history['accuracy'],label='Training Accuracy')
+plt.plot(history.history['val_accuracy'],label='Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
+
+#5.Evaluate the model using precision,recall,and F1 score:
+
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+#Get predictions and round them to nearest integer
+
+y_pred=(model.predict(x_test) > 0.5).astype("int32")
+
+#Evaluate performance
+
+precision=precision_score(y_test, y_pred)
+
+recall=recall_score(y_test, y_pred)
+
+f1=f1_score(y_test, y_pred)
+
+print(f"Precision: {precision}, Recall: {recall}, F1 Score: {f1}")
+
+
+#6. Analyze model performance on sequential data: Discuss how LSTMs/GRUs handle
+#sequential dependencies and compare the results with standard RNNs.
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+def preprocess_input(text):
+    # Define max_features and maxlen based on values used when preparing the training data
+    max_features = 10000 # Number of unique words
+    maxlen = 200 # Maximum review length
+
+    tokenizer=Tokenizer(num_words=max_features)
+
+    tokenizer.fit_on_texts([text]) # Fit only on the user input
+
+    sequence=tokenizer.texts_to_sequences([text])
+
+    padded_sequence=pad_sequences(sequence, maxlen=maxlen)
+
+    return padded_sequence
+
+#Get user input
+
+user_input = input("Enter a movie review: ")
+
+#Preprocess the user input
+
+processed_input = preprocess_input(user_input)
+
+#Make prediction
+# Make prediction
+prediction = model.predict(processed_input)
+sentiment = "Positive" if prediction[0][0] > 0.5 else "Negative"
+ # Output the result
+print(f"Predicted Sentiment: {sentiment} (Probability: {prediction[0][0]:.2f})")
