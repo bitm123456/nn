@@ -1,0 +1,54 @@
+from tensorflow.keras.datasets import cifar10
+(x_train,_),(x_test,_)=cifar10.load_data()
+x_train=x_train.astype('float32')/255
+x_test=x_test.astype('float32')/255
+
+import numpy as np
+noise_factor=0.5
+x_train_noise=x_train+noise_factor*np.random.normal(loc=0.0,scale=1.0,size=x_train.shape)
+x_test_noise=x_test+noise_factor*np.random.normal(loc=0.0,scale=1.0,size=x_test.shape)
+x_train_noise=np.clip(x_train_noise,0.,1.)
+x_test_noise=np.clip(x_test_noise,0.,1.)
+
+import tensorflow as tf
+model=tf.keras.Sequential([
+    #encode
+    tf.keras.layers.Conv2D(32,(3,3),activation='relu',padding='same',input_shape=(32,32,3)),
+    tf.keras.layers.MaxPooling2D((2,2),padding='same'),
+    tf.keras.layers.Conv2D(64,(3,3),activation='relu',padding='same'),
+    tf.keras.layers.MaxPooling2D((2,2),padding='same'),
+
+    #decoder
+    tf.keras.layers.Conv2DTranspose(64,(3,3),activation='relu',padding='same'),
+    tf.keras.layers.UpSampling2D((2,2)),
+    tf.keras.layers.Conv2DTranspose(32,(3,3),activation='relu',padding='same'),
+    tf.keras.layers.UpSampling2D((2,2)),
+    tf.keras.layers.Conv2D(3,(3,3),activation='sigmoid',padding='same')
+
+])
+
+model.compile(optimizer='adam', loss='mse')
+history=model.fit(x_train_noise,x_train,epochs=50,batch_size=128,validation_data=(x_test_noise,x_test))
+
+import matplotlib.pyplot as plt
+decode_imgs=model.predict(x_test_noise)
+n=10
+plt.figure(figsize=(20,6))
+for i in range(n):
+    ax=plt.subplot(3,n,i+1)
+    plt.imshow(x_test[i])
+    plt.title('original')
+    plt.axis('off')
+    ax=plt.subplot(3,n,i+1+n)
+    plt.imshow(x_test_noise[i])
+    plt.title('Noisy')
+    plt.axis('off')
+    # display reconstructed
+    ax=plt.subplot(3,n,i+1+2*n)
+    plt.imshow(decode_imgs[i])
+    plt.title('Reconstructed')
+    plt.axis('off')
+plt.show()
+
+mse=np.mean(np.power(x_test-decode_imgs,2))
+print(f"Reconstructed MSE: {mse}")
