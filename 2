@@ -30,3 +30,8 @@ plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
 plt.show()
+
+model.predict(np.expand_dims(X_test[0],axis = 0))
+class_names=['T-shirt','Trouser','Pullover','Dress','Coat','Sandal','Shirt','Sneaker','Bag','Ankle','Boot']
+plt.imshow(X_test[10],cmap='gray')
+plt.show()
