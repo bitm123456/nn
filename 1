@@ -3,6 +3,7 @@ pip install tensorflow
 from re import VERBOSE
 import tensorflow as tf
 import numpy as np
+
 x_or=np.array([[0,0],[0,1],[1,0],[1,1]],dtype=np.float32)
 y_or=np.array([[0],[1],[1],[1]],dtype=np.float32)
 x_xor=np.array([[0,0],[0,1],[1,0],[1,0]],dtype=np.float32)
@@ -12,12 +13,15 @@ def train_perceptron(x,y,epochs=100,learning_rate=0.1):
   model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=learning_rate),loss='binary_crossentropy',metrics=['accuracy'])
   model.fit(x,y,epochs=epochs,verbose=0)
   return model
+  
 model_or=train_perceptron(x_or,y_or,epochs=500,learning_rate=0.5)
 loss_or,accuracy_or=model_or.evaluate(x_or,y_or)
 print(f"or gate Accuracy: {accuracy_or}")
+
 model_xor=train_perceptron(x_xor,y_xor,epochs=1000,learning_rate=0.8)
 loss_xor,accuracy_xor=model_xor.evaluate(x_xor,y_xor)
 print(f"xor gate Accuracy: {accuracy_xor}")
+
 input1=1
 input2=0
 user_input=np.array([[input1,input2]])
@@ -26,6 +30,7 @@ if prediction>0.5:
   print("True")
 else:
   print("False")
+  
 input1=0
 input2=0
 user_input=np.array([[input1,input2]])
