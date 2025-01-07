@@ -22,15 +22,14 @@ plt.ylabel('Accuracy')
 plt.legend()
 plt.show()
 
-#5.Evaluate the model using precision,recall,and F1 score:
 
 from sklearn.metrics import precision_score, recall_score, f1_score
 
-#Get predictions and round them to nearest integer
+
 
 y_pred=(model.predict(x_test) > 0.5).astype("int32")
 
-#Evaluate performance
+
 
 precision=precision_score(y_test, y_pred)
 
@@ -41,8 +40,7 @@ f1=f1_score(y_test, y_pred)
 print(f"Precision: {precision}, Recall: {recall}, F1 Score: {f1}")
 
 
-#6. Analyze model performance on sequential data: Discuss how LSTMs/GRUs handle
-#sequential dependencies and compare the results with standard RNNs.
+
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -61,17 +59,14 @@ def preprocess_input(text):
 
     return padded_sequence
 
-#Get user input
 
 user_input = input("Enter a movie review: ")
 
-#Preprocess the user input
 
 processed_input = preprocess_input(user_input)
 
-#Make prediction
-# Make prediction
+
 prediction = model.predict(processed_input)
 sentiment = "Positive" if prediction[0][0] > 0.5 else "Negative"
- # Output the result
+
 print(f"Predicted Sentiment: {sentiment} (Probability: {prediction[0][0]:.2f})")
