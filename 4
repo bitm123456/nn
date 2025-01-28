@@ -25,48 +25,26 @@ plt.show()
 
 from sklearn.metrics import precision_score, recall_score, f1_score
 
-
-
 y_pred=(model.predict(x_test) > 0.5).astype("int32")
-
-
-
 precision=precision_score(y_test, y_pred)
-
 recall=recall_score(y_test, y_pred)
-
 f1=f1_score(y_test, y_pred)
-
 print(f"Precision: {precision}, Recall: {recall}, F1 Score: {f1}")
-
-
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 def preprocess_input(text):
-    # Define max_features and maxlen based on values used when preparing the training data
-    max_features = 10000 # Number of unique words
-    maxlen = 200 # Maximum review length
-
+    max_features = 10000 
+    maxlen = 200 
     tokenizer=Tokenizer(num_words=max_features)
-
-    tokenizer.fit_on_texts([text]) # Fit only on the user input
-
+    tokenizer.fit_on_texts([text]) 
     sequence=tokenizer.texts_to_sequences([text])
-
     padded_sequence=pad_sequences(sequence, maxlen=maxlen)
-
     return padded_sequence
 
-
 user_input = input("Enter a movie review: ")
-
-
 processed_input = preprocess_input(user_input)
-
-
 prediction = model.predict(processed_input)
 sentiment = "Positive" if prediction[0][0] > 0.5 else "Negative"
-
 print(f"Predicted Sentiment: {sentiment} (Probability: {prediction[0][0]:.2f})")
