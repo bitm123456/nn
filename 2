@@ -1,11 +1,13 @@
+!pip install tensorflow
 from tensorflow.keras.datasets import fashion_mnist
  
 (X_train, y_train), (X_test, y_test) = fashion_mnist.load_data()
  
 X_train, X_test = X_train / 255.0, X_test / 255.0
-!pip install tensorflow
+
 
 import tensorflow as tf
+import numpy as np
 
 model = tf.keras.Sequential([
     tf.keras.layers.Flatten(input_shape=(28, 28)),
